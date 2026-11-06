@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notification outbox · Eviction Diversion Detector</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <h1>Notification outbox</h1>
+  <p class="muted small">MVP mode: messages are recorded here instead of being sent. Connect an SMS/email provider in <code>src/notify.js</code> to go live.</p>
+  <section class="card">
+    <table><thead><tr><th>When (UTC)</th><th>Case</th><th>To</th><th>Channel</th><th>Recipient</th><th>Message</th></tr></thead>
+    <tbody id="rows"></tbody></table>
+  </section>
+</main>
+<script type="module">
+  import { api, esc, nav } from '/common.js';
+  nav('/outbox.html');
+  const rows = await api('/api/notifications');
+  document.getElementById('rows').innerHTML = rows.map((n) => `<tr>
+    <td class="small">${esc(n.created_at)}</td>
+    <td><a href="/case.html?id=${n.case_id}">${esc(n.case_number)}</a></td>
+    <td>${esc(n.role)}</td><td>${esc(n.channel)}${n.channel === 'paper' ? ` · <a href="/notice/${n.case_id}/${esc(n.role)}" target="_blank">view</a>` : ''}</td>
+    <td class="small">${esc(n.recipient)}</td><td class="small">${esc(n.body)}</td></tr>`).join('');
+</script>
+</body>
+</html>

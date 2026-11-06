@@ -1,0 +1,19 @@
+{
+  "name": "eviction-diversion-detector",
+  "version": "0.1.0",
+  "description": "MVP: identifies eviction cases suitable for mediation, payment plans, rental assistance, or move-out agreements before hearing.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node src/seed.js",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "better-sqlite3": "^11.10.0"
+  }
+}

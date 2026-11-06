@@ -1,0 +1,87 @@
+{
+  "_note": "PLACEHOLDER directory. Replace names/contacts with your jurisdiction's real programs. Conditions are ANDed. Fields: tenant.<question_id> or landlord.<question_id>. Ops: eq, ne, in, lt, lte, gt, gte.",
+  "programs": [
+    {
+      "id": "short_term_era",
+      "audience": "tenant",
+      "type": "Rental assistance",
+      "name": "Short-Term Rental Assistance (arrears up to $2,000)",
+      "description": "Fast-track grants for employed households with modest arrears who want to stay housed.",
+      "contact": "rentalhelp@example.gov · (555) 010-2000",
+      "conditions": [
+        { "field": "tenant.rent_owed", "op": "gt", "value": 0 },
+        { "field": "tenant.rent_owed", "op": "lte", "value": 2000 },
+        { "field": "tenant.employed", "op": "eq", "value": "yes" },
+        { "field": "tenant.wants_to_stay", "op": "eq", "value": "yes" }
+      ]
+    },
+    {
+      "id": "emergency_era",
+      "audience": "tenant",
+      "type": "Rental assistance",
+      "name": "Emergency Rental Assistance Program",
+      "description": "General rental arrears assistance. Apply before the mediation or hearing date.",
+      "contact": "era@example.gov · (555) 010-2100",
+      "conditions": [
+        { "field": "tenant.rent_owed", "op": "gt", "value": 0 },
+        { "field": "tenant.applied_assistance", "op": "eq", "value": "no" },
+        { "field": "tenant.wants_to_stay", "op": "ne", "value": "no" }
+      ]
+    },
+    {
+      "id": "court_mediation",
+      "audience": "tenant",
+      "type": "Mediation",
+      "name": "Housing Court Mediation Program",
+      "description": "Free, neutral mediators help landlords and tenants reach agreements before the hearing.",
+      "contact": "mediation@example-court.gov · (555) 010-3000",
+      "conditions": [
+        { "field": "tenant.willing_mediation", "op": "in", "value": ["yes", "unsure"] }
+      ]
+    },
+    {
+      "id": "court_mediation_landlord",
+      "audience": "landlord",
+      "type": "Mediation",
+      "name": "Housing Court Mediation Program",
+      "description": "Free, neutral mediators help landlords and tenants reach agreements before the hearing.",
+      "contact": "mediation@example-court.gov · (555) 010-3000",
+      "conditions": [
+        { "field": "landlord.willing_mediation", "op": "in", "value": ["yes", "unsure"] }
+      ]
+    },
+    {
+      "id": "legal_aid",
+      "audience": "tenant",
+      "type": "Legal aid",
+      "name": "Regional Legal Aid — Housing Unit",
+      "description": "Free legal advice and representation for eligible tenants.",
+      "contact": "intake@legalaid.example.org · (555) 010-4000",
+      "conditions": [
+        { "field": "tenant.has_legal_aid", "op": "eq", "value": "no" }
+      ]
+    },
+    {
+      "id": "relocation",
+      "audience": "tenant",
+      "type": "Housing search",
+      "name": "Housing Search & Relocation Assistance",
+      "description": "Help finding a new unit, moving costs, and security deposits.",
+      "contact": "relocate@example.org · (555) 010-5000",
+      "conditions": [
+        { "field": "tenant.move_with_time", "op": "in", "value": ["yes", "unsure"] }
+      ]
+    },
+    {
+      "id": "landlord_payment_programs",
+      "audience": "landlord",
+      "type": "Landlord resources",
+      "name": "Landlord Participation in Rental Assistance",
+      "description": "How landlords can receive rental assistance payments directly on a tenant's behalf.",
+      "contact": "landlords@example.gov · (555) 010-2200",
+      "conditions": [
+        { "field": "landlord.primary_goal", "op": "in", "value": ["rent", "both"] }
+      ]
+    }
+  ]
+}

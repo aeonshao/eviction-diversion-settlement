@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scoring rules · Eviction Diversion Detector</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <h1>Scoring rules</h1>
+  <p class="muted small">The engine is fully transparent: a case's score is the sum of the rules below that apply, clamped to 0–100.
+  Rules needing both parties are only evaluated once both intakes are in. Edit rules in <code>src/scoring.js</code>.</p>
+  <section class="card"><h2>Tiers</h2><p id="tiers"></p></section>
+  <section class="card">
+    <h2>Rules</h2>
+    <table><thead><tr><th>Rule</th><th>Requires</th><th class="num">Points</th></tr></thead><tbody id="rules"></tbody></table>
+  </section>
+  <section class="card">
+    <h2>Referral programs</h2>
+    <p class="muted small">Edit <code>config/referral-programs.json</code> to match your jurisdiction. All conditions must hold.</p>
+    <table><thead><tr><th>Program</th><th>For</th><th>Conditions</th></tr></thead><tbody id="programs"></tbody></table>
+  </section>
+</main>
+<script type="module">
+  import { api, esc, nav } from '/common.js';
+  nav('/rules.html');
+  const r = await api('/api/rules');
+  document.getElementById('tiers').innerHTML =
+    `<span class="tier High">High</span> score ≥ ${r.thresholds.High} &nbsp; <span class="tier Medium">Medium</span> ${r.thresholds.Medium}–${r.thresholds.High - 1} &nbsp; <span class="tier Low">Low</span> &lt; ${r.thresholds.Medium}`;
+  document.getElementById('rules').innerHTML = r.rules.map((x) => `<tr>
+    <td>${esc(x.label)}<div class="muted small"><code>${esc(x.id)}</code></div></td>
+    <td>${x.needs === 'both' ? 'Both intakes' : esc(x.needs) + ' intake'}</td>
+    <td class="num"><strong>${x.points > 0 ? '+' : '−'}${Math.abs(x.points)}</strong></td></tr>`).join('');
+  document.getElementById('programs').innerHTML = r.programs.map((p) => `<tr>
+    <td><strong>${esc(p.name)}</strong><div class="muted small">${esc(p.type)}</div></td><td>${esc(p.audience)}</td>
+    <td class="small">${p.conditions.map((c) => `<code>${esc(c.field)} ${esc(c.op)} ${esc(JSON.stringify(c.value))}</code>`).join('<br>')}</td></tr>`).join('');
+</script>
+</body>
+</html>

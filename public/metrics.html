@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Program metrics · Eviction Diversion Detector</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <h1>Program metrics</h1>
+  <p class="muted small">Visibility for court administrators into diversion suitability, mediation participation, and outcomes.</p>
+  <section class="tiles" id="tiles"></section>
+  <section class="card">
+    <h2>Cases by workflow status</h2>
+    <table><thead><tr><th>Status</th><th class="num">Cases</th></tr></thead><tbody id="by-status"></tbody></table>
+  </section>
+  <section class="card small muted">
+    <strong>Definitions.</strong> <em>Suitable for diversion</em>: High or Medium among cases where both parties completed intake.
+    <em>Mediation participation</em>: cases that reached a mediation session ÷ cases referred to mediation.
+    <em>Settlement success</em>: settled or move-out agreement ÷ concluded mediations.
+    <em>Resolved without hearing</em>: settled + move-out agreement + dismissed.
+  </section>
+</main>
+<script type="module">
+  import { api, esc, fmtPct, nav } from '/common.js';
+  nav('/metrics.html');
+  const m = await api('/api/metrics');
+  const tile = (l, v, s = '') => `<div class="tile"><div class="label">${esc(l)}</div><div class="value">${esc(v)}</div><div class="sub">${esc(s)}</div></div>`;
+  document.getElementById('tiles').innerHTML = [
+    tile('Total cases', m.totalCases),
+    tile('Intake completion (both parties)', fmtPct(m.intakeCompletionRate)),
+    tile('Tenant response rate', fmtPct(m.tenantResponseRate)),
+    tile('Suitable for diversion', fmtPct(m.diversionSuitableRate), `High ${m.tiers.High} · Medium ${m.tiers.Medium} · Low ${m.tiers.Low}`),
+    tile('Referred to mediation', m.referredToMediation),
+    tile('Mediation participation', fmtPct(m.mediationParticipationRate)),
+    tile('Settlement success', fmtPct(m.settlementSuccessRate)),
+    tile('Resolved without hearing', m.resolvedWithoutHearing, 'hearings avoided'),
+  ].join('');
+  document.getElementById('by-status').innerHTML = m.statuses.map((s) =>
+    `<tr><td>${esc(s.label)}</td><td class="num">${m.byStatus[s.value]}</td></tr>`).join('');
+</script>
+</body>
+</html>
